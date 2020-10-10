@@ -1,3 +1,3 @@
 # html-devinfo-webpack-plugin
 
-将开发者信息写入html标签中
+读取项目目录下的git 信息并且将git信息写入到html的meta标签中。
