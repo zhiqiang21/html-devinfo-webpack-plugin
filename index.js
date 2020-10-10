@@ -44,7 +44,7 @@ class HtmlDevInfoWebpackPlugin {
     } else {
       // webpack v2
       compiler.plugin('compilation', (compilation) => {
-        compilation.plugin('html-webpack-plugin-alter-asset-tags', function (htmlPluginData, callback) {
+        compilation.plugin('html-webpack-plugin-alter-asset-tags', async function (htmlPluginData, callback) {
           const htmlHeadData = htmlPluginData.head || [];
 
           htmlHeadData.push(this.metaTagString('devinfo', await this.devInfoString()));
