@@ -10,6 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 class HtmlDevInfoWebpackPlugin {
   apply(compiler) {
+    const _this = this;
     // webpack > 2
     if (compiler.hooks) {
       compiler.hooks.compilation.tap(
@@ -28,30 +29,37 @@ class HtmlDevInfoWebpackPlugin {
 
           htmlWebpackPluHooks.alterAssetTags.tapAsync(
             'html-devinfo-webpack-plugin',
-            async (data, cb) => {
+            (data, cb) => {
               const metaData = data.assetTags.meta;
 
-              metaData.push(
-                this.metaTagString('devinfo', await this.devInfoString())
-              );
-              lodash.set(data, 'assetTags.meta', metaData);
+              _this.devInfoString().then(resp => {
+                metaData.push(this.metaTagString('devinfo', resp));
+                lodash.set(data, 'assetTags.meta', metaData);
 
-              cb(null, data);
+                cb(null, data);
+              });
             }
           );
         }
       );
     } else {
       // webpack v2
-      compiler.plugin('compilation', (compilation) => {
-        compilation.plugin('html-webpack-plugin-alter-asset-tags', async function (htmlPluginData, callback) {
-          const htmlHeadData = htmlPluginData.head || [];
+      compiler.plugin('compilation', compilation => {
+        compilation.plugin(
+          'html-webpack-plugin-alter-asset-tags',
+          async function (htmlPluginData, callback) {
+            const htmlHeadData = htmlPluginData.head || [];
 
-          htmlHeadData.push(this.metaTagString('devinfo', await this.devInfoString()));
-          lodash.set(htmlPluginData, 'head', htmlHeadData);
+            _this.devInfoString().then(resp => {
+              htmlHeadData.push(
+                this.metaTagString('devinfo', resp)
+              );
+              lodash.set(htmlPluginData, 'head', htmlHeadData);
 
-          callback(null, htmlPluginData);
-        });
+              callback(null, htmlPluginData);
+            })
+          }
+        );
       });
     }
   }
