@@ -52,7 +52,7 @@ class HtmlDevInfoWebpackPlugin {
 
             _this.devInfoString().then(resp => {
               htmlHeadData.push(
-                this.metaTagString('devinfo', resp)
+                _this.metaTagString('devinfo', resp)
               );
               lodash.set(htmlPluginData, 'head', htmlHeadData);
 
@@ -64,13 +64,12 @@ class HtmlDevInfoWebpackPlugin {
     }
   }
 
-  metaTagString(_name, _content) {
+  metaTagString(name, content) {
     return {
       tagName: 'meta',
-      voidTag: true,
       attributes: {
-        _name,
-        _content
+        name,
+        content
       }
     };
   }
