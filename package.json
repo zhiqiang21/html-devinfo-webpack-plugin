@@ -1,6 +1,6 @@
 {
   "name": "@didi/html-devinfo-webpack-plugin",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "add project info to html meta tag",
   "main": "index.js",
   "scripts": {
