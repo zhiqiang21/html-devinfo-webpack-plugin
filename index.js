@@ -6,7 +6,9 @@
 const lodash = require('lodash');
 const encodeDevinfo = require('./lib/aes');
 const devGitInfo = require('./lib/git').developGitInfo;
+const OE_DEVLOP_INFO = require('./lib/oe');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { OE_GIT_URL, OE_TRIGGER_USER } = require('./lib/oe');
 
 class HtmlDevInfoWebpackPlugin {
   apply(compiler) {
@@ -75,7 +77,15 @@ class HtmlDevInfoWebpackPlugin {
   }
 
   async devInfoString() {
-    const devInfo = await devGitInfo();
+    let devInfo = await devGitInfo();
+
+    if (JSON.stringify(devInfo) === '{}') {
+      devinfo = {
+        user: OE_TRIGGER_USER,
+        remote: OE_GIT_URL
+      }
+    }
+
     return encodeDevinfo.encodeCrypto(JSON.stringify(devInfo));
   }
 }
