@@ -80,7 +80,7 @@ class HtmlDevInfoWebpackPlugin {
     let devInfo = await devGitInfo();
 
     if (JSON.stringify(devInfo) === '{}') {
-      devinfo = {
+      devInfo = {
         user: OE_TRIGGER_USER,
         remote: OE_GIT_URL
       }
