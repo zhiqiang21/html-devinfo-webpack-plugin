@@ -1,14 +1,13 @@
 /**
- * @file
+ * @file 获取html-webpack-plugin 插件声明周期并且添加自己的开发者信息
  * @date 2020/10/09
  * @author hpuhouzhiqiang@didiglobal.com
  */
 const lodash = require('lodash');
 const encodeDevinfo = require('./lib/aes');
 const devGitInfo = require('./lib/git').developGitInfo;
-const OE_DEVLOP_INFO = require('./lib/oe');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { OE_GIT_URL, OE_TRIGGER_USER } = require('./lib/oe');
+
 
 class HtmlDevInfoWebpackPlugin {
   apply(compiler) {
@@ -77,14 +76,7 @@ class HtmlDevInfoWebpackPlugin {
   }
 
   async devInfoString() {
-    let devInfo = await devGitInfo();
-
-    if (JSON.stringify(devInfo) === '{}') {
-      devInfo = {
-        user: OE_TRIGGER_USER,
-        remote: OE_GIT_URL
-      }
-    }
+    const devInfo = await devGitInfo();
 
     return encodeDevinfo.encodeCrypto(JSON.stringify(devInfo));
   }
