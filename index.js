@@ -6,8 +6,8 @@
 const lodash = require('lodash');
 const encodeDevinfo = require('./lib/aes');
 const devGitInfo = require('./lib/git').developGitInfo;
+const moduleID = require('./lib/module');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 
 class HtmlDevInfoWebpackPlugin {
   apply(compiler) {
@@ -30,15 +30,17 @@ class HtmlDevInfoWebpackPlugin {
 
           htmlWebpackPluHooks.alterAssetTags.tapAsync(
             'html-devinfo-webpack-plugin',
-            (data, cb) => {
+            async (data, cb) => {
               const metaData = data.assetTags.meta;
 
-              _this.devInfoString().then(resp => {
-                metaData.push(this.metaTagString('devinfo', resp));
-                lodash.set(data, 'assetTags.meta', metaData);
+              const devInfo = await _this.devInfoString();
+              // const moduleInfo = await _this.moduleInfo().module_id;
 
-                cb(null, data);
-              });
+              metaData.push(this.metaTagString('devinfo', devInfo));
+              // metaData.push(this.metaTagString('moduleID', moduleInfo));
+              lodash.set(data, 'assetTags.meta', metaData);
+
+              cb(null, data);
             }
           );
         }
@@ -50,15 +52,14 @@ class HtmlDevInfoWebpackPlugin {
           'html-webpack-plugin-alter-asset-tags',
           async function (htmlPluginData, callback) {
             const htmlHeadData = htmlPluginData.head || [];
+            const devInfo = await _this.devInfoString();
+            // const moduleInfo = await _this.moduleInfo().module_id;
 
-            _this.devInfoString().then(resp => {
-              htmlHeadData.push(
-                _this.metaTagString('devinfo', resp)
-              );
-              lodash.set(htmlPluginData, 'head', htmlHeadData);
+            htmlHeadData.push(_this.metaTagString('devinfo', devInfo));
+            // htmlHeadData.push(_this.metaTagString('moduleID', moduleInfo));
+            lodash.set(htmlPluginData, 'head', htmlHeadData);
 
-              callback(null, htmlPluginData);
-            })
+            callback(null, htmlPluginData);
           }
         );
       });
@@ -74,6 +75,10 @@ class HtmlDevInfoWebpackPlugin {
       }
     };
   }
+
+  // async moduleInfo() {
+  //   return await moduleID.moduleNameToModuleId().data;
+  // }
 
   async devInfoString() {
     const devInfo = await devGitInfo();
