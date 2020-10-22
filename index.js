@@ -1,7 +1,7 @@
 /**
  * @file 获取html-webpack-plugin 插件声明周期并且添加自己的开发者信息
  * @date 2020/10/09
- * @author hpuhouzhiqiang@didiglobal.com
+ * @author hpuhouzhiqiang@gmail.com
  */
 const lodash = require('lodash');
 const encodeDevinfo = require('./lib/aes');
